@@ -30,6 +30,7 @@ Route::get('activate', function() {
 Route::get('login', function() {return view('auth.login');});
 Route::post('login', 'Sentinel\SentinelController@login');
 
+Route::get('register/{email}', 'Sentinel\SentinelController@ResendActivationCode');
 Route::get('register', function() {return view('auth.register');});
 Route::post('register', 'Sentinel\SentinelController@register');
 

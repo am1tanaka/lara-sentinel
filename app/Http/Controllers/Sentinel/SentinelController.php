@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Sentinel;
 use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
+use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Mail;
 use Activation;
 
@@ -19,6 +20,41 @@ class SentinelController extends Controller
      * @var string
      */
     protected $redirectTo = '/';
+
+    /**
+     * 指定のメールアドレスのアクティベーションコードを再送する
+     */
+    protected function resendActivationCode(Request $request) {
+        // 古いアクティベーションコードを削除
+        Activation::removeExpired();
+
+        // ユーザーを確認
+        $user = Sentinel::findByCredentials(['email' => base64_decode($request->email)]);
+        if (is_null($user)) {
+            return redirect('login')->with(['myerror' => trans('sentinel.invalid_activation_params')]);
+        }
+
+        // すでにアクティベート済みの時は、何もせずにログインへ
+        if (Activation::completed($user)) {
+            return redirect('login')->with(['info' => trans('sentinel.activation_done')]);
+        }
+
+        // アクティベーションの状況を確認
+        $exists = Activation::exists($user);
+        if (!$exists) {
+            // 存在しない場合は、再生成して、そのコードを送信する
+            $activation = Activation::create($user);
+        }
+        else {
+            // 現在のコードを
+            $activation = $exists;
+        }
+
+        // メールで送信する
+        $this->sendActivationCode($user, $activation->code);
+        // メールを確認して、承認してからログインすることを表示するページへ
+        return redirect('login')->with('info', trans('sentinel.after_register'));
+    }
 
     /**
      * アクティベーション
@@ -47,7 +83,7 @@ class SentinelController extends Controller
      * ログイン
      */
     protected function login(Request $request) {
-        // チェック
+        // バリデーション
         $this->validate($request, [
             'email' => 'required|email|max:255',
             'password' => 'required|between:6,255',
@@ -60,17 +96,18 @@ class SentinelController extends Controller
                 'email' => $request['email'],
                 'password' => $request['password']
             ], $request['remember']);
-        } catch (NotActivatedException $e) {
+        } catch (NotActivatedException $notactivated) {
             return view('auth.login', [
-                'info' => '登録したメールアドレスに、登録確認用のメールを送信してあります。メールを開いて、リンクをクリックしてから、再度ログインしてください。'
+                'myerror' => trans('sentinel.not_activation'),
+                'resend_code' => $request['email'],
             ]);
+        } catch (ThrottlingException $throttling) {
+            return view('auth.login', ['myerror' => trans('sentinel.login_throttling')."[あと".$throttling->getDelay()."秒]"]);
         }
 
         if (!$this->userInterface) {
             // エラー
-            return view('auth.login', [
-                'info' => 'ログインに失敗しました。正しいメールアドレスとパスワードを入力してください。']
-            );
+            return view('auth.login', ['myerror' => trans('sentinel.login_failed')]);
         }
 
         return redirect($this->redirectTo);
@@ -102,15 +139,24 @@ class SentinelController extends Controller
         // アクティベーションを作成する
         $activation = Activation::create($user);
         // メールで送信する
+        $this->sendActivationCode($user, $activation->code);
+
+        // メールを確認して、承認してからログインすることを表示するページへ
+        return redirect('login')->with('info', trans('sentinel.after_register'));
+    }
+
+    /**
+     * 指定のユーザーに、指定のコードをメールで送信する
+     * @param Cartalyst\Sentinel\Users\UserInterface $user ユーザー
+     * @param string アクティベーションコード
+     */
+    private function sendActivationCode($user, $code) {
         Mail::send('sentinel.emails.activation', [
             'user' => $user,
-            'code' => $activation->code,
+            'code' => $code,
         ], function($m) use ($user) {
             $m->from(config('app.activation_from'), config('app.appname'));
             $m->to($user->email, $user->name)->subject(trans('sentinel.activate_title'));
         });
-
-        // メールを確認して、承認してからログインすることを表示するページへ
-        return redirect('login')->with('info', trans('sentinel.after_register'));
-     }
+    }
 }
