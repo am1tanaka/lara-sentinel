@@ -15,12 +15,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('activate/{email}/{code}', 'Sentinel\SentinelController@activate');
 
-Route::get('/login', function() {return view('auth.login');});
-Route::post('/login', 'Sentinel\SentinelController@login');
+/*
+Route::get('activate/{email}/{code}', function($email, $code) {
+    return view('auth.login', ['info' => $email."/".$code]);
+});
 
-Route::get('/register', function() {return view('auth.register');});
-Route::post('/register', 'Sentinel\SentinelController@register');
+Route::get('activate', function() {
+    return view('auth.login');
+});
+*/
 
+Route::get('login', function() {return view('auth.login');});
+Route::post('login', 'Sentinel\SentinelController@login');
 
-Route::get('/home', 'HomeController@index');
+Route::get('register', function() {return view('auth.register');});
+Route::post('register', 'Sentinel\SentinelController@register');
+
+Route::get('home', 'HomeController@index');

@@ -3,7 +3,7 @@
 [{{ config('app.appname') }}]へのユーザー登録を仮受付いたしました。<br>
 以下のリンクをクリックして、登録を確定させてください。<br>
 <br>
-<a href="{{ $link = url('activate', [urlencode($user->email), $code])}}">{{ $link }}</a><br>
+<a href="{{ $link = url('activate', [base64_encode($user->email), $code])}}">{{ $link }}</a><br>
 <br>
 --------<br>
 [{{config('app.appname')}}]システムメール<br>
