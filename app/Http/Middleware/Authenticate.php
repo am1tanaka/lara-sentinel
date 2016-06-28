@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use Sentinel;
 
 class Authenticate
 {
@@ -12,19 +12,21 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next)
     {
-        if (Auth::guard($guard)->guest()) {
+        if (Sentinel::guest()) {
             if ($request->ajax() || $request->wantsJson()) {
+                // ajaxでのアクセスや、JSONの場合はテキストのみ
                 return response('Unauthorized.', 401);
             } else {
+                // ログインしていないのでログイン画面へ
                 return redirect()->guest('login');
             }
         }
 
+        // 認証しているので指定のルートへ
         return $next($request);
     }
 }
