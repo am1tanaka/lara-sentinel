@@ -2,8 +2,14 @@
 
 return [
 
+    // アプリ名
     'appname' => 'Laravel-Sentinelテスト',
+
+    // アクティベーション元のメールアドレス
     'activation_from' => env('ACTIVATION_FROM', 'your@email.com'),
+
+    // 管理者用EMailアドレスがあれば設定
+    'admin_email' => env('ADMIN_EMAIL', ''),
 
     /*
     |--------------------------------------------------------------------------
