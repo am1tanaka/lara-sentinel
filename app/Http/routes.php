@@ -17,21 +17,17 @@ Route::get('/', function () {
 
 Route::get('activate/{email}/{code}', 'Sentinel\SentinelController@activate');
 
-/*
-Route::get('activate/{email}/{code}', function($email, $code) {
-    return view('auth.login', ['info' => $email."/".$code]);
-});
-
-Route::get('activate', function() {
-    return view('auth.login');
-});
-*/
-
 Route::get('login', function() {return view('auth.login');});
 Route::post('login', 'Sentinel\SentinelController@login');
 
-Route::get('register/{email}', 'Sentinel\SentinelController@ResendActivationCode');
+Route::get('register/{email}', 'Sentinel\SentinelController@resendActivationCode');
 Route::get('register', function() {return view('auth.register');});
 Route::post('register', 'Sentinel\SentinelController@register');
+
+Route::get('password/reset/{email}/{code}/{password}', 'Sentinel\SentinelController@resetPassword');
+Route::get('password/reset', function() {return view('auth.passwords.reset', ['token'=>'']);});
+Route::post('password/reset', 'Sentinel\SentinelController@sendResetPassword');
+
+Route::get('logout', 'Sentinel\SentinelController@logout');
 
 Route::get('home', 'HomeController@index');

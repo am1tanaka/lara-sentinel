@@ -11,6 +11,7 @@ use Cartalyst\Sentinel\Checkpoints\NotActivatedException;
 use Cartalyst\Sentinel\Checkpoints\ThrottlingException;
 use Mail;
 use Activation;
+use Reminder;
 
 class SentinelController extends Controller
 {
@@ -20,6 +21,94 @@ class SentinelController extends Controller
      * @var string
      */
     protected $redirectTo = '/';
+
+    /**
+     * ログアウト処理
+     */
+    protected function logout(Request $request) {
+        Sentinel::logout();
+
+        return redirect($this->redirectTo);
+    }
+
+    /**
+     * パスワードのリセットを実行する
+     */
+    protected function resetPassword(Request $request) {
+        // データ長を調整しておく
+        $email = substr(base64_decode($request->email), 0, 255);
+        $code = substr($request->code, 0, 64);
+        $passwd = substr(base64_decode($request->password), 0,255);
+
+        $user = Sentinel::findByCredentials(['email' => $email]);
+        if (is_null($user)) {
+            // 不正なアクセス
+            // TODO: throttleを呼び出す
+            // 正常なメッセージを返す
+            return redirect('login')->with('info', trans('sentinel.password_reset_done'));
+        }
+
+        // リマインダーを完了させる
+        if (Reminder::complete($user, $code, $passwd)) {
+            // 成功
+            return redirect('login')->with('info', trans('sentinel.password_reset_done'));
+        }
+
+        // 失敗
+        return redirect('login')->with('info', trans('sentinel.password_reset_failed'));
+    }
+
+    /**
+     * パスワードを再設定するための処理
+     * ユーザーが有効で、パスワードが条件に合致していたら、SentinelのReminderを使って処理する
+     */
+    protected function sendResetPassword(Request $request) {
+        // 古いリマインダーコードを削除
+        Reminder::removeExpired();
+
+        // チェック
+        $this->validate($request, [
+           // emailは必須で、emailの形式で、255文字まで
+           // メールアドレスの有無は、不正を避けるためにチェックしない
+           'email' => 'required|email|max:255',
+           // passwordは必須で、6文字以上255文字以下で、確認欄と一致する必要がある
+           'password' => 'required|between:6,255|confirmed',
+       ]);
+
+       // ユーザーを検索
+       $user = Sentinel::findByCredentials(['email'=>$request->email]);
+       if (is_null($user)) {
+           // TODO:Throttleを呼び出す
+           // ユーザーがいなければ成功したような感じにしてログイン画面へ
+           return redirect('login')->with(['info'=>trans('sentinel.password_reset_sent')]);
+       }
+
+       // リマインダーが作成済みなら、それを再送信する
+       $code = "";
+       $exists = Reminder::exists($user);
+       if ($exists) {
+           // すでに設定されているので、リマインダーコードを設定
+           $code = $exists->code;
+       }
+       else {
+           // 新規にリマインダーを作成して、コードを返す
+           $reminder = Reminder::create($user);
+           $code = $reminder->code;
+       }
+
+       // メールを送信
+       Mail::send('sentinel.emails.reminder', [
+           'user' => $user,
+           'code' => $code,
+           'password' => $request->password,
+       ], function($m) use ($user) {
+           $m->from(config('app.activation_from'), config('app.appname'));
+           $m->to($user->email, $user->name)->subject(trans('sentinel.reminder_title'));
+       });
+
+       // 成功したら、login画面へ移動
+       return redirect('login')->with(['info'=>trans('sentinel.password_reset_sent')]);
+    }
 
     /**
      * 指定のメールアドレスのアクティベーションコードを再送する
