@@ -58,10 +58,10 @@
                     @foreach($users as $user)
                         <tr>
                             <td>
-                                <input type="text" name="user_{{$user->id}}_name" value="{{$user->first_name}}" maxlength='255' size='20'>
+                                <input type="text" name="user_{{$user->id}}_name" id="user_{{$user->id}}_name" value="{{$user->first_name}}" maxlength='255' size='20'>
                             </td>
                             <td>
-                                <input type="text" name="user_{{$user->id}}_email" value="{{$user->email}}" maxlength='255' size='30'>
+                                <input type="text" name="user_{{$user->id}}_email" id="user_{{$user->id}}_email" value="{{$user->email}}" maxlength='255' size='30'>
                             </td>
                             <td>
                                 @include('parts.role-select', ['user' => $user, 'roles' => $roles])
@@ -83,6 +83,7 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                         <h4 class="modal-title">ユーザー情報を変更しますか？</h4>
                                       </div>
+
                                       <div class="modal-footer">
                                           <form action="{{ url('users/'.$user->id) }}" method="POST">
                                               {{ csrf_field() }}
