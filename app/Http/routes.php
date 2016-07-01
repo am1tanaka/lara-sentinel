@@ -15,6 +15,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// TODO: 動作確認が終わったら削除する
+Route::get('test/{role}/{routename}', function($role, $routename){return view('sentinel.users',
+[
+    'role' => $role,
+    'method' => $routename,
+    'roles' => [
+        (object)['id' => 0, 'name' => 'Administrator'],
+        (object)['id' => 1, 'name' => 'Moderator'],
+    ]
+]);});
+
 Route::get('activate/{email}/{code}', 'Sentinel\SentinelController@activate');
 
 Route::get('login', function() {return view('auth.login');});
@@ -29,5 +40,7 @@ Route::get('password/reset', function() {return view('auth.passwords.reset', ['t
 Route::post('password/reset', 'Sentinel\SentinelController@sendResetPassword');
 
 Route::get('logout', 'Sentinel\SentinelController@logout');
+
+Route::resource('users', 'Sentinel\UserController');
 
 Route::get('home', 'HomeController@index');
