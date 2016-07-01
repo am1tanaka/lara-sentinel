@@ -10,7 +10,7 @@
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
                         {{ csrf_field() }}
 
-                        @include('parts.entry-user')
+                        @include('parts.user-entry')
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">

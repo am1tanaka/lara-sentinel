@@ -15,7 +15,12 @@
 
                         @include('parts.user-entry')
 
-                        @include('parts.role-select', ['userid' => 'new'])
+                        <div class="form-group">
+                            <label for="cb_user_new" class="col-md-4 control-label">ロール</label>
+                            <div class="col-md-6" id="cb_user_new">
+                                @include('parts.role-select', ['user' => false, 'roles' => $roles])
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
@@ -31,6 +36,22 @@
 
                 <div class="panel panel-default">
                     <div class="panel-heading">ユーザー一覧</div>
+
+                    <table class="table table-striped">
+
+                        <tbody>
+                            @foreach($users as $user)
+                                <tr>
+                                    <td>
+                                        {{$user->first_name}}
+                                    </td>
+                                    <td>
+                                        @include('parts.role-select', ['user' => $user, 'roles' => $roles])
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                </table>
 
                     <div class="panel-body">
 
