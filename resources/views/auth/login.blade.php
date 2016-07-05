@@ -7,16 +7,7 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Login</div>
                 <div class="panel-body">
-                    @if (session('info') || isset($info))
-                    <div class="alert alert-info">
-                        @if (session('info'))
-                            {{ session('info') }}
-                        @endif
-                        @if (isset($info))
-                            {{ $info }}
-                        @endif
-                    </div>
-                    @endif
+                    @include('parts.info')
                     @if (session('myerror') || isset($myerror))
                     <div class="alert alert-danger">
                         @if (session('myerror'))

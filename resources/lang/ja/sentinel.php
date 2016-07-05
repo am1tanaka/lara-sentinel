@@ -11,4 +11,7 @@ return [
     'reminder_title' => 'パスワードをリセットできます。',
     'password_reset_done' => 'パスワードをリセットしました。',
     'password_reset_failed' => 'リセットコードが古くなっていました。もう一度、リセットし直してください。',
+    'permission_denied' => '権限がありません。',
+    'user_regist_subject' => 'ユーザー登録完了',
+    'user_regist_done' => 'ユーザーの登録を完了しました。登録情報を管理者メールアドレスに送信しました。',
 ];

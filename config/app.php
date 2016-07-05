@@ -11,6 +11,12 @@ return [
     // 管理者用EMailアドレスがあれば設定
     'admin_email' => env('ADMIN_EMAIL', ''),
 
+    // 管理者名
+    'admin_name' => env('ADMIN_NAME', '管理者'),
+
+    // 自動生成するパスワードの長さ
+    'password_generate_length' => 8,
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

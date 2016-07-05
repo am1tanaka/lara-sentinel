@@ -4,6 +4,19 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
+            @include('parts.info')
+            @if (count($errors) > 0)
+                <!-- Form Error List -->
+                <div class="alert alert-danger">
+                    <strong>以下のエラーが発生しました。</strong>
+                    <br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             @if ($role=="admin")
 
