@@ -18,6 +18,11 @@ class UserController extends Controller
      * 処理に権限チェックのミドルウェアを設定
      */
     public function __construct() {
+        $this->middleware('permission:user.view', [
+            'only' => [
+                'index'
+            ]
+        ]);
         $this->middleware('permission:user.create', [
             'only' => [
                 'store'
@@ -27,12 +32,21 @@ class UserController extends Controller
 
     /**
      * Display a listing of the resource.
+     * user.view権限が必要
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        // 自分の最初のロールを取得
+        $user = Sentinel::check();
+
+        return view('sentinel.users',
+        [
+            'role' => $user->roles[0]->slug,
+            'roles' => Sentinel::getRoleRepository()->all(),
+            'users' => Sentinel::getUserRepository()->all()
+        ]);
     }
 
     /**
@@ -76,7 +90,9 @@ class UserController extends Controller
            'email' => $request['email'],
            'password' => $pass,
        ];
-       $user = Sentinel::registerAndActivate($credentials);
+       if (!config('app.ignore_db_access')) {
+           $user = Sentinel::registerAndActivate($credentials);
+       }
 
        // ロールを設定する
        $roles = [];
@@ -84,7 +100,9 @@ class UserController extends Controller
        $allroles = Sentinel::getRoleRepository()->all();
        foreach($allroles as $role) {
             if ($request['user_new_role_'.$role->id] == "on") {
-                $role->users()->attach($user);
+                if (!config('app.ignore_db_access')) {
+                    $role->users()->attach($user);
+                }
                 if (mb_strlen($rolenames) > 0) {
                     $rolenames .= ", ";
                 }
