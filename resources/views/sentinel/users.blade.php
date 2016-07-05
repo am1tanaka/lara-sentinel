@@ -30,6 +30,12 @@
                         @include('parts.user-entry')
 
                         <div class="form-group">
+                            <div class="col-md-6 col-md-offset-4 help-block">
+                            ＊パスワードを省略すると自動生成します。
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="cb_user_new" class="col-md-4 control-label">ロール</label>
                             <div class="col-md-6" id="cb_user_new">
                                 @include('parts.role-select', ['user' => false, 'roles' => $roles])

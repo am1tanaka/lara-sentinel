@@ -18,7 +18,7 @@ return [
     'password_generate_length' => 8,
 
     // 開発中、処理の流れを確認して、DBへの登録wなどをキャンsルしたい場合にtrueに設定
-    'ignore_db_access' => true,
+    'ignore_db_access' => false,
 
     /*
     |--------------------------------------------------------------------------

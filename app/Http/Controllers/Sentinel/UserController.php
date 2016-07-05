@@ -23,9 +23,19 @@ class UserController extends Controller
                 'index'
             ]
         ]);
+        $this->middleware('permission:user.update', [
+            'only' => [
+                'update'
+            ]
+        ]);
         $this->middleware('permission:user.create', [
             'only' => [
                 'store'
+            ]
+        ]);
+        $this->middleware('permission:user.delete', [
+            'only' => [
+                'destroy'
             ]
         ]);
     }
@@ -168,6 +178,7 @@ class UserController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * user.update 権限があるユーザーのみ実行可能
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -180,12 +191,22 @@ class UserController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     * user.delete権限があるユーザーのみ実行可能
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        //
+        // ユーザーを検索
+        $user = Sentinel::findById($id);
+        if (!$user) {
+            // 手動でアクセスした場合はユーザーが見つからない可能性があるので、チェックをしておく
+            return Redirect::back()->withInput()->withErrors(['nouser' => trans('sentinel.user_not_found')]);
+        }
+
+        $user->delete();
+
+        return Redirect::back()->with(['info' => trans('sentinel.user_delete_done')]);
     }
 }
