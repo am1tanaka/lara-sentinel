@@ -15,17 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// TODO: 動作確認が終わったら削除する
-Route::get('test/{role}/{routename}', function($role, $routename){
-    return view('sentinel.users',
-    [
-        'role' => $role,
-        'method' => $routename,
-        'roles' => Sentinel::getRoleRepository()->all(),
-        'users' => Sentinel::getUserRepository()->all()
-    ]);
-});
-
 Route::get('activate/{email}/{code}', 'Sentinel\SentinelController@activate');
 
 Route::get('login', function() {return view('auth.login');});
