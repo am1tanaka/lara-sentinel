@@ -18,13 +18,13 @@ class RoleController extends Controller
      */
     public function index()
     {
-        return view('sentinel.roles', ['permissions' => $this->getPermissionList()]);
+        return view('sentinel.roles', ['permissions' => self::getPermissionList()]);
     }
 
     /**
      * 全ロールに設定されているロールのリストを作成
      */
-    private function getPermissionList() {
+    public static function getPermissionList() {
         $permissions = [];
         foreach(Sentinel::getRoleRepository()->all() as $role) {
             foreach($role->permissions as $k => $v) {

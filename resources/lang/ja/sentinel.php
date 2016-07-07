@@ -18,4 +18,6 @@ return [
     'user_delete_done' => '指定のユーザーを削除しました。',
     'detach_role' => 'ロールを外しました。',
     'attach_role' => 'ロールを設定しました。',
+    'same_permission' => 'すでに同じ名前のパーミッションが定義されています。',
+    'permission_add_done' => 'パーミッションを追加しました。'
 ];
