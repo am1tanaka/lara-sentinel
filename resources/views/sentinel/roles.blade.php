@@ -170,10 +170,18 @@
                     @foreach(Sentinel::getRoleRepository()->all() as $role)
                         <tr>
                             <td>
-                                {{$role->name}}
+                                <input type="text"
+                                    class="form_control"
+                                    name="role_name_{{$role->id}}"
+                                    id="role_name_{{$role->id}}"
+                                    value="{{empty(old('role_name_'.$role->id)) ? $role->name : old('role_name_'.$role->id)}}">
                             </td>
                             <td>
-                                {{$role->slug}}
+                                <input type="text"
+                                    class="form_control"
+                                    name="role_slug_{{$role->id}}"
+                                    id="role_slug_{{$role->id}}"
+                                    value="{{empty(old('role_slug_'.$role->id)) ? $role->slug : old('role_slug_'.$role->id)}}">
                             </td>
                             <td>
                                 @foreach ($permissions as $per)
