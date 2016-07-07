@@ -59,13 +59,18 @@
             <div class="row">
                 <div class="col-md-12">
                     @foreach($permissions as $permission)
-                        <form style="display:inline" class="col" role="form" method="POST" action="{{url('permissions', base64_encode($permission))}}">
-                            {{ csrf_field() }}
-                            {{ method_field('DELETE') }}
-                            <button type="submit" class="btn btn-default" aria-label="Close">
-                                <i class="fa fa-btn fa-remove"></i> {{$permission}}
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-default" aria-label="Close" data-toggle="modal"
+                            data-target="#delete-permission-{{array_search($permission, $permissions)}}">
+                            <i class="fa fa-btn fa-remove"></i> {{$permission}}
+                        </button>
+                        @include('parts.modal', [
+                            'id' => 'delete-permission-'.array_search($permission, $permissions),
+                            'title' => trans('sentinel.delete_permission_title'),
+                            'body' => trans('sentinel.confirm_delete_permission').' : '.$permission,
+                            'action' => url('permissions', base64_encode($permission)),
+                            'method' => 'DELETE'
+                        ])
+
                     @endforeach
                 </div>
             </div>
