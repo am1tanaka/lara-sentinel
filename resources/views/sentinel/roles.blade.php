@@ -56,16 +56,19 @@
 
             <h4>パーミッションの削除</h4>
 
-            @foreach($permissions as $permission)
-                <tr>
-                    <td>
-                        <button type="button" class="btn btn-default" aria-label="Close">
-                            <i class="fa fa-btn fa-remove"></i>
-                            {{$permission}}
-                        </button>
-                    </td>
-                </tr>
-            @endforeach
+            <div class="row">
+                <div class="col-md-12">
+                    @foreach($permissions as $permission)
+                        <form style="display:inline" class="col" role="form" method="POST" action="{{url('permissions', base64_encode($permission))}}">
+                            {{ csrf_field() }}
+                            {{ method_field('DELETE') }}
+                            <button type="submit" class="btn btn-default" aria-label="Close">
+                                <i class="fa fa-btn fa-remove"></i> {{$permission}}
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+            </div>
 
             <hr>
 

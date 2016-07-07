@@ -19,5 +19,7 @@ return [
     'detach_role' => 'ロールを外しました。',
     'attach_role' => 'ロールを設定しました。',
     'same_permission' => 'すでに同じ名前のパーミッションが定義されています。',
-    'permission_add_done' => 'パーミッションを追加しました。'
+    'permission_add_done' => 'パーミッションを追加しました。',
+    'invalid_permission' => '無効なパーミッションが指定されました。',
+    'permission_delete_done' => 'パーミッションを削除しました。',    
 ];

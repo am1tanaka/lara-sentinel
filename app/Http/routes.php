@@ -34,6 +34,6 @@ Route::resource('users', 'Sentinel\UserController');
 Route::resource('roles', 'Sentinel\RoleController');
 
 Route::post('permissions', 'Sentinel\PermissionController@store');
-Route::delete('permissions', 'Sentinel\PermissionController@destroy');
+Route::delete('permissions/{name}', 'Sentinel\PermissionController@destroy');
 
 Route::get('home', 'HomeController@index');

@@ -28,7 +28,7 @@ class RoleController extends Controller
         $permissions = [];
         foreach(Sentinel::getRoleRepository()->all() as $role) {
             foreach($role->permissions as $k => $v) {
-                if (!array_search($k, $permissions)) {
+                if (!in_array($k, $permissions)) {
                     $permissions[] = $k;
                 }
             }

@@ -30,19 +30,18 @@ class PermissionController extends Controller
        // 既存なら何もしない
        $nowper = RoleController::getPermissionList();
 
-       if (array_search($request->new_permission, $nowper) !== false) {
+       if (in_array($request->new_permission, $nowper)) {
            // すでにあるので、エラーで返す
            return Redirect::back()->withInput()->withErrors(['new_permission' => trans('sentinel.same_permission')]);
        }
 
        // 作成実行
        foreach(Sentinel::getRoleRepository()->all() as $role) {
-           $role->addPermission($request->new_permission, false);
-           $role->save();
+           $role->addPermission($request->new_permission, false)->save();
        }
 
        // 成功
-       return Redirect::back()->withInput()->with(['info' => trans('sentinel.permission_add_done')]);
+       return Redirect::back()->with(['info' => trans('sentinel.permission_add_done').":".$request->new_permission]);
     }
 
     /**
@@ -51,8 +50,19 @@ class PermissionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($name)
     {
-        //
+        $per = base64_decode($name);
+        $permissions = RoleController::getPermissionList();
+        if (!in_array($per, $permissions)) {
+            return Redirect::back()->withErrors(['delete_permission' => trans('sentinel.invalid_permission')]);
+        }
+
+        // 削除
+        foreach (Sentinel::getRoleRepository()->all() as $role) {
+            $role->removePermission($per)->save();
+        }
+
+        return Redirect::back()->with(['info' => trans('sentinel.permission_delete_done').":".$per]);
     }
 }
