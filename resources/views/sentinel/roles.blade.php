@@ -169,36 +169,55 @@
                 <tbody>
                     @foreach(Sentinel::getRoleRepository()->all() as $role)
                         <tr>
-                            <td>
-                                <input type="text"
-                                    class="form_control"
-                                    name="role_name_{{$role->id}}"
-                                    id="role_name_{{$role->id}}"
-                                    value="{{empty(old('role_name_'.$role->id)) ? $role->name : old('role_name_'.$role->id)}}">
-                            </td>
-                            <td>
-                                <input type="text"
-                                    class="form_control"
-                                    name="role_slug_{{$role->id}}"
-                                    id="role_slug_{{$role->id}}"
-                                    value="{{empty(old('role_slug_'.$role->id)) ? $role->slug : old('role_slug_'.$role->id)}}">
-                            </td>
-                            <td>
-                                @foreach ($permissions as $per)
-                                    <div>
-                                        <input type="checkbox" name="name" value=""
-                                            @if (array_key_exists($per, $role->permissions))
-                                                {{$role->permissions[$per] ? 'checked="true"' : ''}}
-                                            @endif
-                                        > {{$per}}
+                            <form class="col" role="form" method="POST" action="{{url('roles', $role->id)}}">
+                                {{ csrf_field() }}
+                                {{ method_field('PUT') }}
+                                <td>
+                                    <div class="form-group{{ $errors->has('role_'.$role->id.'_name') ? ' has-error' : '' }}">
+                                        <input type="text"
+                                            class="form-control"
+                                            name="role_{{$role->id}}_name"
+                                            id="role_{{$role->id}}_name"
+                                            value="{{empty(old('role_'.$role->id.'_name')) ? $role->name : old('role_'.$role->id.'_name')}}">
+                                        @include('parts.error-block', ['id' => 'role_'.$role->id.'_name'])
                                     </div>
-                                @endforeach
-                            </td>
-                            <td>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa fa-btn fa-refresh"></i> 変更
-                                </button>
-                            </td>
+                                </td>
+                                <td>
+                                    <div class="form-group{{ $errors->has('role_'.$role->id.'_slug') ? ' has-error' : '' }}">
+                                        <input type="text"
+                                            class="form_control"
+                                            name="role_{{$role->id}}_slug"
+                                            id="role_{{$role->id}}_slug"
+                                            value="{{empty(old('role_'.$role->id.'_slug')) ? $role->slug : old('role_'.$role->id.'_slug')}}">
+                                        @include('parts.error-block', ['id' => 'role_'.$role->id.'_slug'])
+                                    </div>
+                                </td>
+                                <td>
+                                    @foreach ($permissions as $per)
+                                        <div>
+                                            <input type="checkbox"
+                                                name="role_{{$role->id}}_per_{{str_replace(".", "-", $per)}}"
+                                                @if (old("role_".$role->id."_per_".str_replace(".", "-", $per))=="on")
+                                                    checked="true"
+                                                @elseif ($role->hasAccess($per))
+                                                    checked="true"
+                                                @endif
+                                            > {{$per}}
+                                        </div>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#role_{{$role->id}}_update">
+                                        <i class="fa fa-btn fa-refresh"></i> 変更
+                                    </button>
+
+                                    @include('parts.modal-no-form', [
+                                        'id' => 'role_'.$role->id.'_update',
+                                        'title' => 'ロールの更新',
+                                        'body' => 'ロール['.$role->name.']の情報を更新しますか？',
+                                    ])
+                                </td>
+                            </form>
                             <td>
                                 <button type="submit" class="btn btn-danger">
                                     <i class="fa fa-btn fa-remove"></i> 削除

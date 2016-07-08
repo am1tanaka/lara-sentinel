@@ -24,4 +24,6 @@ return [
     'permission_delete_done' => 'パーミッションを削除しました。',
     'delete_permission_title' => 'パーミッションの削除',
     'confirm_delete_permission' => '指定のパーミッションを削除しますか？',
+    'role_update_done' => 'ロール情報を更新しました。',
+    'invalid_role' => '不正なロールが指定されました。',
 ];

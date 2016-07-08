@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Sentinel;
 
 use Illuminate\Http\Request;
@@ -7,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Redirect;
 use Sentinel;
 
 class RoleController extends Controller
@@ -88,7 +88,52 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $idx = 'role_'.$id.'_';
+
+        // バリデーションを実施
+        $this->validate($request, [
+            $idx.'name' => 'required|max:255',
+            $idx.'slug' => 'required|max:255',
+        ]);
+
+        // 修正をチェック
+        $updates = [];
+        $updates[] = trans('sentinel.role_update_done');
+
+        // 現ロールを取得
+        $role = Sentinel::findRoleById($id);
+        if ($role == null) {
+            return Redirect::back()->withInput()->withErrors(['invalid_role' => trans('sentinel.invalid_role')]);
+        }
+
+        // 名前チェック
+        if ($role->name !== $request[$idx."name"]) {
+            $updates[] = "ロール名： ".$role->name." > ".$request[$idx."name"];
+            $role->name = $request[$idx."name"];
+        }
+        // slugチェック
+        if ($role->slug !== $request[$idx."slug"]) {
+            $updates[] = "Slug： ".$role->slug." > ".$request[$idx."slug"];
+            $role->slug = $request[$idx."slug"];
+        }
+
+        // パーミッションの設定
+        $permissions = self::getPermissionList();
+        foreach($permissions as $per) {
+            if ($role->hasAccess($per) && (!$request[$idx."per_".str_replace(".", "-", $per)])) {
+                $updates[] = $per." > off";
+                $role->updatePermission($per, false);
+            }
+            else if (!$role->hasAccess($per) && ($request[$idx."per_".str_replace(".","-",$per)])) {
+                $updates[] = $per." > on";
+                $role->updatePermission($per, true);
+            }
+        }
+
+        // 更新
+        $role->save();
+
+        return Redirect::back()->with(['info' => $updates]);
     }
 
     /**
