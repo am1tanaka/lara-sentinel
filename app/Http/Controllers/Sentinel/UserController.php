@@ -109,7 +109,7 @@ class UserController extends Controller
        $rolenames = "";
        $allroles = Sentinel::getRoleRepository()->all();
        foreach($allroles as $role) {
-            if ($request['user_new_role_'.$role->id] == "on") {
+            if ($request['user_new_role']-0 === $role->id-0) {
                 if (!config('app.ignore_db_access')) {
                     $role->users()->attach($user);
                 }
@@ -135,7 +135,7 @@ class UserController extends Controller
        ]);
 
        // メールを確認して、承認してからログインすることを表示するページへ
-       return redirect('users')->with('info', trans('sentinel.user_regist_done'));
+       return redirect('users')->with('info', $request['user_new_role']."/".trans('sentinel.user_regist_done'));
     }
 
     /**
@@ -214,8 +214,8 @@ class UserController extends Controller
         // ロールのチェック
         $nowroles = "";
         foreach(Sentinel::getRoleRepository()->all() as $role) {
-            $idxinrole = $userid.'role_'.$role->id;
-            $inrole = (!empty($request[$idxinrole] && ($request[$idxinrole]==="on")));
+            $idxinrole = $userid.'role';
+            $inrole = (!empty($request[$idxinrole] && ($request[$idxinrole]-0 === $role->id-0)));
             $nowrole = $user->inRole($role->slug);
             if ($nowrole && !$inrole) {
                 // ロールを外す
