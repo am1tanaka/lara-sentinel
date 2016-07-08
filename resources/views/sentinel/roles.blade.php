@@ -187,9 +187,17 @@
                                 </td>
                             </form>
                             <td>
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#role-{{$role->id}}-delete">
                                     <i class="fa fa-btn fa-remove"></i> 削除
                                 </button>
+
+                                @include('parts.modal', [
+                                    'id' => 'role-'.$role->id.'-delete',
+                                    'title' => 'ロールの削除',
+                                    'body' => 'ロール['.$role->name.']を削除しますか？',
+                                    'action' => url('roles', $role->id),
+                                    'method' => 'DELETE',
+                                ])
                             </td>
                         </tr>
                     @endforeach

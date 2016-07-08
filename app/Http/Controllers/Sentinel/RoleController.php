@@ -166,6 +166,16 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        // 削除実行
+        $role = Sentinel::findRoleById($id);
+        if ($role === null) {
+            return Redirect::back()->withInput()->withErrors(['role-'.$id.'_delete', trans('sentinel.invalid_role')]);
+        }
+        $name = $role->name;
+
+        // 削除実行
+        $role->delete();
+
+        return Redirect::back()->with(['info' => trans('sentinel.role_delete_done')." : ".$name]);
     }
 }
