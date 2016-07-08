@@ -24,9 +24,7 @@
                 <thead>
                     <tr>
                         <th>パーミッション名</th>
-                        <th>
-                            操作
-                        </th>
+                        <th>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,11 +35,7 @@
                             <td>
                                 <div class="form-group{{ $errors->has('new_permission') ? ' has-error' : '' }}">
                                     <input id="new_permission" type="text" class="form-control" name="new_permission" value="{{ old('new_permission') }}">
-                                    @if ($errors->has('new_permission'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('new_permission') }}</strong>
-                                        </span>
-                                    @endif
+                                    @include('parts.error-block', ['id' => 'new_permission'])
                                 </div>
                             </td>
                             <td>
@@ -70,7 +64,6 @@
                             'action' => url('permissions', base64_encode($permission)),
                             'method' => 'DELETE'
                         ])
-
                     @endforeach
                 </div>
             </div>
@@ -82,18 +75,10 @@
             <table class="table table-striped table-hover table-bordered">
                 <thead>
                     <tr>
-                        <th>
-                            ロール名(日本語可)
-                        </th>
-                        <th>
-                            Slug
-                        </th>
-                        <th>
-                            パーミッション
-                        </th>
-                        <th>
-                            操作
-                        </th>
+                        <th>ロール名(日本語可)</th>
+                        <th>Slug</th>
+                        <th>パーミッション</th>
+                        <th>操作</th>
                     </tr>
                 </thead>
 
@@ -106,21 +91,13 @@
                             <td>
                                 <div class="form-group{{ $errors->has('new_role') ? ' has-error' : '' }}">
                                     <input id="new_role" type="text" class="form-control" name="new_role" value="{{ old('new_role') }}">
-                                    @if ($errors->has('new_role'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('new_role') }}</strong>
-                                        </span>
-                                    @endif
+                                    @include('parts.error-block', ['id' => 'new_role'])
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group{{ $errors->has('new_slug') ? ' has-error' : '' }}">
                                     <input id="new_slug" type="text" class="form-control" name="new_slug" value="{{ old('new_slug') }}">
-                                    @if ($errors->has('new_slug'))
-                                        <span class="help-block">
-                                            <strong>{{ $errors->first('new_slug') }}</strong>
-                                        </span>
-                                    @endif
+                                    @include('parts.error-block', ['id' => 'new_slug'])
                                 </div>
                             </td>
                             <td>
@@ -151,18 +128,10 @@
             <table class="table table-striped table-hover table-bordered">
                 <thead>
                     <tr>
-                        <th>
-                            ロール名(日本語可)
-                        </th>
-                        <th>
-                            Slug
-                        </th>
-                        <th>
-                            パーミッション
-                        </th>
-                        <th colspan="2">
-                            操作
-                        </th>
+                        <th>ロール名(日本語可)</th>
+                        <th>Slug</th>
+                        <th>パーミッション</th>
+                        <th colspan="2">操作</th>
                     </tr>
                 </thead>
 

@@ -131,9 +131,13 @@ class RoleController extends Controller
         }
 
         // 更新
-        $role->save();
+        if (count($updates) > 1) {
+            $role->save();
+            return Redirect::back()->with(['info' => $updates]);
+        }
 
-        return Redirect::back()->with(['info' => $updates]);
+        // 更新なし
+        return Redirect::back()->with(['info' => trans('sentinel.no_changed')]);
     }
 
     /**
