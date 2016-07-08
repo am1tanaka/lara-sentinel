@@ -55,12 +55,12 @@
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url('/home') }}">Home</a></li>
-                    @if (Sentinel::check())
-                        @if (Sentinel::inRole('admin'))
+                    @if ($user=Sentinel::check())
+                        @if ($user->hasAccess('user.view'))
                             <li><a href="{{ url('users')}}">ユーザー管理</a></li>
+                        @endif
+                        @if ($user->hasAccess('role.view'))
                             <li><a href="{{ url('roles')}}">ロール管理</a></li>
-                        @elseif (Sentinel::inRole('moderator'))
-                            <li><a href="{{ url('users')}}">ユーザー管理</a></li>
                         @endif
                     @endif
                 </ul>

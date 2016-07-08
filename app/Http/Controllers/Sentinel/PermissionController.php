@@ -14,6 +14,23 @@ use Redirect;
 class PermissionController extends Controller
 {
     /**
+     * コンストラクター
+     * 処理に権限チェックのミドルウェアを設定。パーミッションの権限はロールに準じる
+     */
+    public function __construct() {
+        $this->middleware('permission:role.create', [
+            'only' => [
+                'store'
+            ]
+        ]);
+        $this->middleware('permission:role.delete', [
+            'only' => [
+                'destroy'
+            ]
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request

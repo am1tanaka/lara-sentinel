@@ -11,6 +11,34 @@ use Sentinel;
 
 class RoleController extends Controller
 {
+     /**
+      * コンストラクター
+      * 処理に権限チェックのミドルウェアを設定
+      */
+     public function __construct() {
+         $this->middleware('permission:role.view', [
+             'only' => [
+                 'index'
+             ]
+         ]);
+         $this->middleware('permission:role.update', [
+             'only' => [
+                 'update'
+             ]
+         ]);
+         $this->middleware('permission:role.create', [
+             'only' => [
+                 'store'
+             ]
+         ]);
+         $this->middleware('permission:role.delete', [
+             'only' => [
+                 'destroy'
+             ]
+         ]);
+     }
+
+
     /**
      * Display a listing of the resource.
      *
