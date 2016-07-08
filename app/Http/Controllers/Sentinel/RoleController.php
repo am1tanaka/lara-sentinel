@@ -54,7 +54,25 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'new_role' => 'required|max:255',
+            'new_slug' => 'required|max:255',
+        ]);
+
+        // パーミッションリストの作成
+        $permissions = [];
+        $pers = self::getPermissionList();
+        foreach($pers as $per) {
+            $permissions[$per] = $request['new_per_'.str_replace(".", "-", $per)] == "on";
+        }
+
+        $role = Sentinel::getRoleRepository()->createModel()->create([
+            'name' => $request->new_role,
+            'slug' => $request->new_slug,
+            'permissions' => $permissions
+        ]);
+
+        return Redirect::back()->with(['info' => trans('sentinel.role_create_done')]);
     }
 
     /**

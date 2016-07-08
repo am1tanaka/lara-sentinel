@@ -27,4 +27,5 @@ return [
     'role_update_done' => 'ロール情報を更新しました。',
     'invalid_role' => '不正なロールが指定されました。',
     'no_changed' => '変更点はありませんでした。',
+    'role_create_done' => 'ロールを追加しました。',
 ];

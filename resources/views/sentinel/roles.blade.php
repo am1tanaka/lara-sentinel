@@ -103,8 +103,8 @@
                             <td>
                                 @foreach ($permissions as $per)
                                     <div>
-                                        <input type="checkbox" name="new_per_{{$per}}" id="new_per_{{$per}}"
-                                            {{old("new_per_".$per)=="on" ? 'checked="true"' : ''}}
+                                        <input type="checkbox" name="new_per_{{str_replace(".", "-", $per)}}"
+                                            {{old("new_per_".str_replace(".", "-", $per))=="on" ? 'checked="true"' : ''}}
                                         > {{$per}}
                                     </div>
                                 @endforeach
@@ -115,7 +115,6 @@
                                 </button>
                             </td>
                         </tr>
-
 
                         </div>
 
