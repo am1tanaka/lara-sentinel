@@ -50,7 +50,7 @@ class RoleController extends Controller
     }
 
     /**
-     * 全ロールに設定されているロールのリストを作成
+     * 全ロールに設定されているパーミッションのリストを作成
      */
     public static function getPermissionList() {
         $permissions = [];

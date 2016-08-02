@@ -35,7 +35,7 @@
                             <td>
                                 <div class="form-group{{ $errors->has('new_permission') ? ' has-error' : '' }}">
                                     <input id="new_permission" type="text" class="form-control" name="new_permission" value="{{ old('new_permission') }}">
-                                    @include('parts.error-block', ['id' => 'new_permission'])
+                                    @include('parts.error-block', ['name' => 'new_permission'])
                                 </div>
                             </td>
                             <td>
@@ -91,13 +91,13 @@
                             <td>
                                 <div class="form-group{{ $errors->has('new_role') ? ' has-error' : '' }}">
                                     <input id="new_role" type="text" class="form-control" name="new_role" value="{{ old('new_role') }}">
-                                    @include('parts.error-block', ['id' => 'new_role'])
+                                    @include('parts.error-block', ['name' => 'new_role'])
                                 </div>
                             </td>
                             <td>
                                 <div class="form-group{{ $errors->has('new_slug') ? ' has-error' : '' }}">
                                     <input id="new_slug" type="text" class="form-control" name="new_slug" value="{{ old('new_slug') }}">
-                                    @include('parts.error-block', ['id' => 'new_slug'])
+                                    @include('parts.error-block', ['name' => 'new_slug'])
                                 </div>
                             </td>
                             <td>
@@ -147,7 +147,7 @@
                                             name="role_{{$role->id}}_name"
                                             id="role_{{$role->id}}_name"
                                             value="{{empty(old('role_'.$role->id.'_name')) ? $role->name : old('role_'.$role->id.'_name')}}">
-                                        @include('parts.error-block', ['id' => 'role_'.$role->id.'_name'])
+                                        @include('parts.error-block', ['name' => 'role_'.$role->id.'_name'])
                                     </div>
                                 </td>
                                 <td>
@@ -157,7 +157,7 @@
                                             name="role_{{$role->id}}_slug"
                                             id="role_{{$role->id}}_slug"
                                             value="{{empty(old('role_'.$role->id.'_slug')) ? $role->slug : old('role_'.$role->id.'_slug')}}">
-                                        @include('parts.error-block', ['id' => 'role_'.$role->id.'_slug'])
+                                        @include('parts.error-block', ['name' => 'role_'.$role->id.'_slug'])
                                     </div>
                                 </td>
                                 <td>
