@@ -18,10 +18,14 @@ class Permission
      */
     public function handle($request, Closure $next, $permission)
     {
-        if (!($user=Sentinel::check()) || (!$user->hasAccess($permission))) {
-            return Redirect::back()->withInput()->withErrors(['permission' => trans('sentinel.permission_denied')]);
+        $user=Sentinel::check();
+        if ($user) {
+            foreach($user->roles as $role) {
+                if ($role->hasAccess($permission)) {
+                    return $next($request);
+                }
+            }
         }
-
-        return $next($request);
+        return Redirect::back()->withInput()->withErrors(['permission' => trans('sentinel.permission_denied')]);
     }
 }
